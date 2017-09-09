@@ -1,10 +1,10 @@
 {
   "name": "tetto-come-nuovo",
   "version": "0.0.1",
-  "description": "Un progetto per studiare pprofonditamente Gulp",
+  "description": "Un progetto per studiare approfonditamente Gulp",
   "repository": {
     "type": "git",
-    "url": "?.git"
+    "url": "https://github.com/alexrighetto/tetto-come-nuovo.git"
   },
   "author": "Alex Righetto",
   "devDependencies": {
