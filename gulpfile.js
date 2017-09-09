@@ -2,6 +2,8 @@ var gulp    = require('gulp'),
     gutil   = require('gulp-util'),
     /* permette di gestire i file cofeescript */
     coffee  = require('gulp-coffee'),
+    /* permette di richiedere librerie js nei files js */
+    browserify = require('gulp-browserify'),
     /* permette di concatenare i files javascript in un unico singolo file */
     concat  = require('gulp-concat');
 
@@ -10,7 +12,8 @@ var coffeeSources = ['components/coffee/*.coffee'];
 
 /* Indico tramite array i files js, allo scopo di comprimerli in un singolo. È importante l'ordine */
 var jsSources = [
-    'components/scripts/tagline.js'
+    'components/scripts/tagline.js',
+    'components/scripts/template.js',
 ];
 
 /*
@@ -38,6 +41,8 @@ gulp.task('js', function () {
     gulp.src(jsSources)
         /* concateno e salvo in un nome specifico */
         .pipe(concat('script.js'))
+        /* invio il tutto a browserify */
+        .pipe(browserify())
         .pipe(gulp.dest('builds/development/js'));
     gutil.log('Eseguito js');
 });
