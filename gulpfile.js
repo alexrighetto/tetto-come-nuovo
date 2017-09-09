@@ -1,13 +1,14 @@
-var gulp    = require('gulp'),
-    gutil   = require('gulp-util'),
+var gulp        = require('gulp'),
+    gutil       = require('gulp-util'),
     /* permette di gestire i file cofeescript */
-    coffee  = require('gulp-coffee'),
+    coffee      = require('gulp-coffee'),
     /* permette di richiedere librerie js nei files js */
-    browserify = require('gulp-browserify'),
+    browserify  = require('gulp-browserify'),
     /* permette di richiedere librerie js nei files js */
-    compass = require('gulp-compass'),
+    compass     = require('gulp-compass'),
+    connect     = require('gulp-connect'),
     /* permette di concatenare i files javascript in un unico singolo file */
-    concat  = require('gulp-concat');
+    concat      = require('gulp-concat');
     
 
 /* È utile indicare tramite array le sorgenti dei file. L'asterisco inoltre significa: 'tutti i file' */
@@ -49,8 +50,8 @@ gulp.task('js', function () {
         .pipe(concat('script.js'))
         /* invio il tutto a browserify */
         .pipe(browserify())
-        .pipe(gulp.dest('builds/development/js'));
-    gutil.log('Eseguito js');
+        .pipe(gulp.dest('builds/development/js'))
+    .pipe(connect.reload());
 });
 
 /*
@@ -67,8 +68,8 @@ gulp.task('compass', function () {
             style: 'expanded'
         }))
         
-    .pipe(gulp.dest('builds/development/css'));
-    gutil.log('Eseguito sass');
+    .pipe(gulp.dest('builds/development/css'))
+    .pipe(connect.reload());
 });
 
 gulp.task('watch', function () {
@@ -77,5 +78,12 @@ gulp.task('watch', function () {
     gulp.watch('components/sass/*.scss', ['compass']);
 });
 
-gulp.task('default', ['coffee', 'js', 'compass', 'watch']);
+gulp.task('connect', function () {
+  connect.server({
+    root: 'builds/development/',
+    livereload: true
+  });
+});
+
+gulp.task('default', ['coffee', 'js', 'compass', 'connect', 'watch' ]);
 
