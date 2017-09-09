@@ -1,0 +1,1 @@
+# Progetto test per lo studio di gulp.
