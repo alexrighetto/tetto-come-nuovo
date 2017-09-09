@@ -23,6 +23,7 @@ var jsSources = [
 /* Indico tramite array i files sass */
 var sassSources = ['components/sass/style.scss'];
 
+var htmlSources = ['builds/development/*.html'];
 /*
 Questa è una task di testing per verificare il corretto funzionamento del file gulpfile.js. È possibile rimuoverla in qualsiasi momento.
 */
@@ -76,6 +77,7 @@ gulp.task('watch', function () {
     gulp.watch(coffeeSources, ['coffee']);
     gulp.watch(jsSources, ['js']);
     gulp.watch('components/sass/*.scss', ['compass']);
+    gulp.watch(htmlSources, ['html']);
 });
 
 gulp.task('connect', function () {
@@ -85,5 +87,12 @@ gulp.task('connect', function () {
   });
 });
 
-gulp.task('default', ['coffee', 'js', 'compass', 'connect', 'watch' ]);
+gulp.task('html', function () {
+  gulp.src(htmlSources)
+   /* .pipe(gulpif(env === 'production', minifyHTML()))
+    .pipe(gulpif(env === 'production', gulp.dest(outputDir))) */
+    .pipe(connect.reload());
+});
+
+gulp.task('default', ['html', 'coffee', 'js', 'compass', 'connect', 'watch' ]);
 
