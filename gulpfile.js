@@ -93,7 +93,7 @@ gulp.task('watch', function () {
     gulp.watch(coffeeSources, ['coffee']);
     gulp.watch(jsSources, ['js']);
     gulp.watch('components/sass/*.scss', ['compass']);
-    gulp.watch(htmlSources, ['html']);
+    gulp.watch('builds/development/*html', ['html']);
 });
 
 gulp.task('connect', function () {
@@ -104,9 +104,9 @@ gulp.task('connect', function () {
 });
 
 gulp.task('html', function () {
-  gulp.src(htmlSources)
+  gulp.src('builds/development/*html')
     .pipe(gulpif(env === 'production', minifyHTML()))
-    .pipe(gulpif(env === 'production', gulp.dest(outputDir))) 
+    .pipe(gulpif(env === 'production', gulp.dest( 'builds/'+outputDir ))) 
     .pipe(connect.reload());
 });
 
