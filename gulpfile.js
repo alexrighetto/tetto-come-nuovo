@@ -6,30 +6,46 @@ var gulp        = require('gulp'),
     browserify  = require('gulp-browserify'),
     /* permette di richiedere librerie js nei files js */
     compass     = require('gulp-compass'),
+    gulpif      = require('gulp-if'),
+    uglify      = require('gulp-uglify'),
+    minifyHTML  = require('gulp-minify-html'),
     connect     = require('gulp-connect'),
     /* permette di concatenare i files javascript in un unico singolo file */
     concat      = require('gulp-concat');
-    
+ 
+var env,
+    coffeeSources,
+    jsSources,
+    sassSources,
+    htmlSources,
+    outputDir,
+    sassStyle;
+
+env = process.env.NODE_ENV || 'development';
+
+
+if (env === 'development') {
+    outputDir = 'development/';
+    sassStyle = 'expanded';
+} else {
+    outputDir = 'production/';
+    sassStyle = 'compressed';
+}
 
 /* È utile indicare tramite array le sorgenti dei file. L'asterisco inoltre significa: 'tutti i file' */
-var coffeeSources = ['components/coffee/*.coffee'];
+coffeeSources = ['components/coffee/*.coffee'];
 
 /* Indico tramite array i files js, allo scopo di comprimerli in un singolo. È importante l'ordine */
-var jsSources = [
+jsSources = [
     'components/scripts/tagline.js',
     'components/scripts/template.js'
 ];
 
 /* Indico tramite array i files sass */
-var sassSources = ['components/sass/style.scss'];
+sassSources = ['components/sass/style.scss'];
 
-var htmlSources = ['builds/development/*.html'];
-/*
-Questa è una task di testing per verificare il corretto funzionamento del file gulpfile.js. È possibile rimuoverla in qualsiasi momento.
-*/
-gulp.task('log', function () {
-    gutil.log('it works!');
-});
+htmlSources = ['builds/' + outputDir + '*.html'];
+
 
 /*
 Questa task serve per trasformare i file coffee in file di js, salvandoli all'interno della cartella 'components/scripts'.
@@ -51,7 +67,7 @@ gulp.task('js', function () {
         .pipe(concat('script.js'))
         /* invio il tutto a browserify */
         .pipe(browserify())
-        .pipe(gulp.dest('builds/development/js'))
+        .pipe(gulp.dest('builds/' + outputDir + 'js'))
     .pipe(connect.reload());
 });
 
@@ -63,13 +79,12 @@ gulp.task('compass', function () {
         /* il file style.css viene trasformato attraerso compass */
         .pipe(compass({
             /* questa linea è molto importante */
-            css: 'builds/development/css',
+            css: 'builds/' + outputDir + 'css',
             sass: 'components/sass',
-            image: 'builds/development/images',
-            style: 'expanded'
+            style: sassStyle
         }))
         
-    .pipe(gulp.dest('builds/development/css'))
+    .pipe(gulp.dest( outputDir + 'css'))
     .pipe(connect.reload());
 });
 
@@ -82,15 +97,15 @@ gulp.task('watch', function () {
 
 gulp.task('connect', function () {
   connect.server({
-    root: 'builds/development/',
+    root: 'builds/' + outputDir ,
     livereload: true
   });
 });
 
 gulp.task('html', function () {
   gulp.src(htmlSources)
-   /* .pipe(gulpif(env === 'production', minifyHTML()))
-    .pipe(gulpif(env === 'production', gulp.dest(outputDir))) */
+    .pipe(gulpif(env === 'production', minifyHTML()))
+    .pipe(gulpif(env === 'production', gulp.dest(outputDir))) 
     .pipe(connect.reload());
 });
 
