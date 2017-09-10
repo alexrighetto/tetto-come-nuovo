@@ -67,6 +67,7 @@ gulp.task('js', function () {
         .pipe(concat('script.js'))
         /* invio il tutto a browserify */
         .pipe(browserify())
+        .pipe(gulpif(env === 'production', uglify()))
         .pipe(gulp.dest('builds/' + outputDir + 'js'))
     .pipe(connect.reload());
 });
